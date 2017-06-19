@@ -1,4 +1,8 @@
-from PyQt4 import QtCore, QtGui
+from PySide import QtCore, QtGui
+try:
+    from PySide.QtCore import QString
+except ImportError:
+    QString = str
 
 class PaletteTableModel(QtCore.QAbstractTableModel):
     """docstring for PaletteTableModel."""
@@ -36,7 +40,7 @@ class PaletteTableModel(QtCore.QAbstractTableModel):
                 else:
                     return "TEMP"
             else:
-                return QtCore.QString("Color %1").arg(section)
+                return QString("Color %s")%(section)
 
     def insertRows(self, position, rows, parent = QtCore.QModelIndex()):
         self.beginInsertRows(parent, position, position + rows - 1)

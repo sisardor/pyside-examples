@@ -1,4 +1,4 @@
-from PyQt4 import QtCore, QtGui
+from PySide import QtCore, QtGui
 
 class PaletteListModel(QtCore.QAbstractListModel):
     """docstring for PaletteListModel."""

@@ -3,17 +3,51 @@
 # Form implementation generated from reading ui file 'progress.ui'
 #
 # Created: Fri Jun 16 10:01:05 2017
-#      by: PyQt4 UI code generator 4.9.4
+#      by: PySide UI code generator 4.9.4
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt4 import QtCore, QtGui
+from PySide import QtCore, QtGui
 from gen import Ui_MainWindow
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
     _fromUtf8 = lambda s: s
 
+
+
+style = """
+
+
+ QTreeView::item {
+    height: 75px;
+    width: 250px;
+ }
+
+ 
+"""
+# QTreeView {
+#      alternate-background-color: yellow;
+#  }
+#  QTreeView {
+#      show-decoration-selected: 1;
+#  }
+# QTreeView::item:hover {
+#      background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #e7effd, stop: 1 #cbdaf1);
+#      border: 1px solid #bfcde4;
+#  }
+
+#  QTreeView::item:selected {
+#      border: 1px solid #567dbc;
+#  }
+
+#  QTreeView::item:selected:active{
+#      background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6ea1f1, stop: 1 #567dbc);
+#  }
+
+#  QTreeView::item:selected:!active {
+#      background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6b9be8, stop: 1 #577fbf);
+#  }
 class MainView(QtGui.QMainWindow):
     def __init__(self, model, main_ctrl):
         super(MainView, self).__init__()
@@ -39,26 +73,33 @@ class MainView(QtGui.QMainWindow):
         self.ui.pushButton_my_button.setEnabled(value)
 
 
-    def test(self, model2):
-        self.ui.listView = QtGui.QListView(self.ui.centralwidget)
-        self.ui.listView.setGeometry(QtCore.QRect(20, 110, 141, 281))
+    def test(self, model2, tree):
+        # self.ui.listView = QtGui.QListView(self.ui.centralwidget)
+        # self.ui.listView.setGeometry(QtCore.QRect(20, 110, 141, 281))
 
 
-        # self.ui.treeView = QtGui.QTreeView(self.ui.centralwidget)
-        # self.ui.treeView.setGeometry(QtCore.QRect(180, 110, 141, 281))
+        self.ui.treeView = QtGui.QTreeView(self.ui.centralwidget)
+        self.ui.treeView.setGeometry(QtCore.QRect(20, 110, 650, 381))
+        self.ui.treeView.setIconSize(QtCore.QSize(100, 75))
+        self.ui.treeView.setColumnWidth(0, 300)
 
-        self.ui.tableView = QtGui.QTableView(self.ui.centralwidget)
-        self.ui.tableView.setGeometry(QtCore.QRect(240, 110, 241, 281))
-
-        self.ui.comboBox = QtGui.QComboBox(self.ui.centralwidget)
-        self.ui.comboBox.setGeometry(QtCore.QRect(520, 110, 104, 26))
-
+        self.filelHeader = self.ui.treeView.header()
+        print self.filelHeader
+        self.filelHeader.setDefaultSectionSize(250)
+        # self.filelHeader.setDefaultAlignment()
 
 
-        self.ui.listView.setModel(model2)
-        # self.ui.treeView.setModel(model2)
-        self.ui.comboBox.setModel(model2)
-        self.ui.tableView.setModel(model2)
+        # self.ui.tableView = QtGui.QTableView(self.ui.centralwidget)
+        # self.ui.tableView.setGeometry(QtCore.QRect(470, 110, 160, 281))
+
+        # self.ui.comboBox = QtGui.QComboBox(self.ui.centralwidget)
+        # self.ui.comboBox.setGeometry(QtCore.QRect(580, 110, 104, 26))
+
+        self.ui.treeView.setModel(tree)
+        self.ui.treeView.setStyleSheet(style)
+        # self.ui.listView.setModel(tree)
+        # self.ui.comboBox.setModel(model2)
+        # self.ui.tableView.setModel(tree)
 
 
     def build_ui(self):

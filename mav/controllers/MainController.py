@@ -1,4 +1,4 @@
-from PyQt4 import QtGui
+from PySide import QtGui
 class MainController(object):
 
     def __init__(self, model):
