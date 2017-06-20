@@ -1,4 +1,7 @@
-from PySide import QtCore, QtGui
+try:
+    from PySide import QtGui, QtCore
+except Exception as e:
+    from PyQt4 import QtGui, QtCore
 
 class PaletteListModel(QtCore.QAbstractListModel):
     """docstring for PaletteListModel."""
@@ -46,7 +49,7 @@ class PaletteListModel(QtCore.QAbstractListModel):
             self.colors.remove(value)
         self.endRemoveRows()
         return True
-        
+
     def data(self, index, role):
         if role == QtCore.Qt.EditRole:
             return self.colors[index.row()].name()

@@ -1,4 +1,7 @@
-from PySide import QtGui
+try:
+    from PySide import QtGui, QtCore
+except Exception as e:
+    from PyQt4 import QtGui, QtCore
 class MainController(object):
 
     def __init__(self, model):

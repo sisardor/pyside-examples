@@ -1,19 +1,19 @@
 # import sys
-from PySide import QtCore, QtGui
-# from TreeModel import TreeModel
+try:
+    from PySide import QtGui, QtCore
+except Exception as e:
+    from PyQt4 import QtGui, QtCore
 
-# from TransformNode import *
-# from TransformNode import CameraNode
-# from TransformNode import LightNode
 
 # https://qt.developpez.com/doc/4.6/stylesheet-examples/#customizing-qtreeview
 
 
 class Node(object):
 	"""docstring for Node"""
-	def __init__(self, name, parent=None):
+	def __init__(self, name, entity=None, parent=None):
 		# super(Node, self).__init__(parent)
 		self.name = name
+		self.entity = entity
 		self.children = []
 		self.parent = parent
 
@@ -22,11 +22,11 @@ class Node(object):
 
 
 	def typeInfo(self):
-		return "NONE"
+		return self.entity.type
 
 	def addChild(self, child):
 		self.children.append(child)
-	
+
 	def insertChild(self, position, child):
 		if position < 0 or position > len(self.children):
 			return False
@@ -41,7 +41,7 @@ class Node(object):
 
 		child = self.children.pop(position)
 		child.parent = None
-		return True	
+		return True
 
 	def setName(self, name):
 		self.name = name
@@ -84,29 +84,29 @@ class Node(object):
 
 class TransformNode(Node):
 	"""docstring for TransformNode"""
-	def __init__(self, name, parent=None):
-		super(TransformNode, self).__init__(name, parent)
-	
+	def __init__(self, name, entity, parent=None):
+		super(TransformNode, self).__init__(name, entity, parent)
+
 	def typeInfo(self):
-		return "TRANSFORM"
-		
+		return self.entity.type
+
 class CameraNode(Node):
 	"""docstring for CameraNode"""
-	def __init__(self, name, parent=None):
-		super(CameraNode, self).__init__(name, parent)
-	
-	def typeInfo(self):
-		return "CAMERA"
+	def __init__(self, name, entity, parent=None):
+		super(CameraNode, self).__init__(name, entity, parent)
 
-		
+	def typeInfo(self):
+		return self.entity.type
+
+
 class LightNode(Node):
 	"""docstring for LightNode"""
-	def __init__(self, name, parent=None):
-		super(LightNode, self).__init__(name, parent)
-	
+	def __init__(self, name, entity, parent=None):
+		super(LightNode, self).__init__(name, entity, parent)
+
 	def typeInfo(self):
-		return "LIGHT"
-		
+		return self.entity.type
+
 
 # if __name__ == '___main__':
 

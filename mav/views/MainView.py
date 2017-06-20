@@ -7,8 +7,13 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PySide import QtCore, QtGui
-from gen import Ui_MainWindow
+try:
+    from PySide import QtGui, QtCore, QtNetwork
+except Exception as e:
+    from PyQt4 import QtGui, QtCore, QtNetwork
+
+# from gen import Ui_MainWindow
+from treeUI import Ui_MainWindow
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
@@ -19,12 +24,53 @@ except AttributeError:
 style = """
 
 
+QTreeView QHeaderView::section {
+     background-color: #2c2f30;
+     color: #AAAAAA;
+     padding-left: 10px;
+     border: 1px solid #3e4041;
+     border-left: 0px;
+     border-right: 0px;
+     font-weight: 700;
+ }
+QTreeView {
+    background: #2c2f30;
+    color: #AAAAAA;
+}
+
+ QTreeView::branch {
+    border-bottom: 1px solid #3e4041;
+ }
+ QTreeView::branch:selected {
+    background-color: #575858 !important;
+    color: #fff !important;
+    fill: white;
+ }
+ QTreeView::item:selected {
+    background-color: #575858 !important;
+    color: #fff !important;
+ }
  QTreeView::item {
-    height: 75px;
+    height: 35px;
     width: 250px;
+    border-bottom: 1px solid #3e4041;
+ }
+ QTreeView::branch {
+    width: 175px;
  }
 
- 
+ QTreeView::branch:has-children:!has-siblings:closed,
+ QTreeView::branch:closed:has-children:has-siblings {
+         border-image: none;
+         image: url(icon-chevronright.svg);
+ }
+ QTreeView::branch:open:has-children:!has-siblings,
+ QTreeView::branch:open:has-children:has-siblings  {
+         border-image: none;
+         image: url(icon-chevrondown.svg);
+ }
+ QTreeView::branch:open
+
 """
 # QTreeView {
 #      alternate-background-color: yellow;
@@ -78,15 +124,12 @@ class MainView(QtGui.QMainWindow):
         # self.ui.listView.setGeometry(QtCore.QRect(20, 110, 141, 281))
 
 
-        self.ui.treeView = QtGui.QTreeView(self.ui.centralwidget)
-        self.ui.treeView.setGeometry(QtCore.QRect(20, 110, 650, 381))
-        self.ui.treeView.setIconSize(QtCore.QSize(100, 75))
-        self.ui.treeView.setColumnWidth(0, 300)
-
+        # self.ui.treeView = QtGui.QTreeView(self.ui.centralwidget)
+        # self.ui.treeView.setGeometry(QtCore.QRect(20, 110, 650, 381))
+        self.ui.treeView.setIconSize(QtCore.QSize(37, 23))
         self.filelHeader = self.ui.treeView.header()
-        print self.filelHeader
-        self.filelHeader.setDefaultSectionSize(250)
-        # self.filelHeader.setDefaultAlignment()
+        self.filelHeader.setDefaultSectionSize(175)
+
 
 
         # self.ui.tableView = QtGui.QTableView(self.ui.centralwidget)
@@ -100,8 +143,54 @@ class MainView(QtGui.QMainWindow):
         # self.ui.listView.setModel(tree)
         # self.ui.comboBox.setModel(model2)
         # self.ui.tableView.setModel(tree)
+        #
+        url = 'http://pipsum.com/935x310.jpg'
+        # download_url = QtCore.QUrl(url)
+        # manager = QtNetwork.QNetworkAccessManager()
+        # request = QtNetwork.QNetworkRequest(download_url)
+        # self.reply = manager.get(request)
+        # # print self.reply
+        # # self.reply.finished.connect(self._populate_textarea)
+        # self.connect(self.reply, QtCore.SIGNAL('finished()'), self._populate_textarea);
+        # print "END"
+        return
+        self.manager = QtNetwork.QNetworkAccessManager()
+        self.manager.finished.connect(self.reply_finished)
+        print(QtNetwork.QNetworkSession(QtNetwork.QNetworkConfigurationManager().defaultConfiguration()).State())
+        request = QtNetwork.QNetworkRequest(QtCore.QUrl(url))
+        print("Sending request")
+        self.manager.get(request)
 
 
+
+    def reply_finished(self, reply):
+        print("Request finishde")
+        print(reply)
+        if reply.error() == QtNetwork.QNetworkReply.NoError:
+            print "No error"
+            available = reply.bytesAvailable()
+            print available
+            if available > 0:
+                data = QtCore.QByteArray(reply.readAll())
+                imageProcessor = ImageProcessor(data);
+                image = imageProcessor.start()
+                self.ui.label.setPixmap(QtGui.QPixmap(image))
+        else:
+            print 'There is error'
+            print reply.errorString()
+
+
+
+        # print(reply.readData(500))
+
+    def _populate_textarea(self, arg):
+        print "_populate_textarea"
+        print arg
+        print self._reply.readAll()
+
+        print "_populate_textarea END"
+        # parse_html()
+        # self._textarea.setPlainText(unicode(self._reply.readAll(), 'utf-8'))
     def build_ui(self):
 
         self.ui = Ui_MainWindow()
@@ -112,7 +201,7 @@ class MainView(QtGui.QMainWindow):
         #### set Qt model for compatible widget types ####
 
         #### connect widget signals to event functions ####
-        self.ui.pushButton_my_button.clicked.connect(self.on_my_button)
+        # self.ui.pushButton_my_button.clicked.connect(self.on_my_button)
 
     def update_ui_from_model(self):
         print 'DEBUG: update_ui_from_model called'
@@ -121,3 +210,19 @@ class MainView(QtGui.QMainWindow):
 
     #### widget signal event functions ####
     def on_my_button(self): self.main_ctrl.change_my_button(self.my_button)
+
+
+import time
+class ImageProcessor(object):
+    """docstring for ImageProcessor"""
+    def __init__(self, imageData, parent=None):
+        super(ImageProcessor, self).__init__()
+        print 'ImageProcessor'
+        self.m_data = imageData
+
+    def start(self):
+        image = QtGui.QImage()
+        image.loadFromData(self.m_data)
+        # image = image.scaled(768, 500, QtCore.KeepAspectRatioByExpanding())
+        time.sleep(2)
+        return image

@@ -7,7 +7,10 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PySide import QtCore, QtGui
+try:
+    from PySide import QtGui, QtCore
+except Exception as e:
+    from PyQt4 import QtGui, QtCore
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
